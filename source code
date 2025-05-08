@@ -1,0 +1,305 @@
+# Data Handling
+import pandas as pd
+import numpy as np
+
+# Data Preprocessing
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+
+# ML Model
+from sklearn.ensemble import RandomForestClassifier
+
+# Evaluation
+from sklearn.metrics import classification_report, accuracy_score
+     
+
+# Visualization (Optional)
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+# Read the dataset
+df = pd.read_csv('sample_traffic_accidents.csv', sep=';')
+
+     
+
+# Display first few rows
+df.head()
+# Shape of the dataset
+print("Shape:", df.shape)
+# Column names
+print("Columns:", df.columns.tolist())
+# Data types and non-null values
+df.info()
+# Summary statistics for numeric features
+df.describe()
+
+# Check for missing values
+print(df.isnull().sum())
+# Check for duplicates
+print("Duplicate rows:", df.duplicated().sum())
+
+print(df.columns.tolist())
+
+['Date', 'Time', 'Location', 'Weather', 'Road_Type', 'Vehicles_Involved', 'Casualties', 'Severity']
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.histplot(df['Severity'], kde=True, bins=5, color='orange')
+plt.title('Distribution of Accident Severity')
+plt.xlabel('Severity Level')
+plt.ylabel('Number of Accidents')
+plt.show()
+
+sns.boxplot(x='Road_Type', y='Severity', data=df)
+plt.title('Road Type vs Severity')
+plt.xlabel('Road Type')
+plt.ylabel('Severity')
+plt.xticks(rotation=45)
+plt.show()
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# ... your code using sns and plt ...# Load your dataset (if not already loaded)
+import pandas as pd
+df = pd.read_csv('sample_traffic_accidents.csv')
+
+# Define target column
+target = 'Severity'
+
+# Define features by removing the target from column list
+features = df.columns.drop(target)
+
+# Print them
+print("Target:", target)
+print("Features:", features.tolist())
+
+# Identify categorical columns
+categorical_cols = df.select_dtypes(include=['object']).columns
+print("Categorical Columns:", categorical_cols.tolist())
+
+df_encoded = pd.get_dummies(df, drop_first=True)
+
+from sklearn.preprocessing import StandardScaler
+
+# Select final features (drop Date and Time or already transformed them)
+df['Hour'] = df['Time'].str.split(':').str[0].astype(int)  # Example of Time to Hour
+df = df.drop(columns=['Date', 'Time'])  # Drop original Date and Time
+
+# Encode categorical variables (if not done yet)
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+df['Location'] = le.fit_transform(df['Location'])
+df['Weather'] = le.fit_transform(df['Weather'])
+df['Road_Type'] = le.fit_transform(df['Road_Type'])
+
+# Define X and y
+X = df.drop(columns=['Severity'])  # Features
+y = df['Severity']                 # Target
+
+# Apply feature scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+from sklearn.model_selection import train_test_split
+
+# Split scaled features and target
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, random_state=42)
+
+# Check the shape
+print("X_train shape:", X_train.shape)
+print("X_test shape:", X_test.shape)
+print("y_train shape:", y_train.shape)
+print("y_test shape:", y_test.shape)
+
+# Train model
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+# Predict
+y_pred = model.predict(X_test)
+
+
+#evaliate
+print("MSE:", mean_squared_error(y_test, y_pred))
+print("R² Score:", r2_score(y_test, y_pred))
+
+from sklearn.preprocessing import LabelEncoder  # Make sure to import it here
+
+le_location = LabelEncoder().fit(df['Location'])
+le_weather = LabelEncoder().fit(df['Weather'])
+le_road = LabelEncoder().fit(df['Road_Type'])
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.linear_model import LinearRegression
+
+# Load your DataFrame
+df = pd.read_csv('sample_traffic_accidents.csv')
+
+# Extract 'Hour' from 'Time' and add it to the DataFrame
+df['Hour'] = pd.to_datetime(df['Time'], format='%H:%M').dt.hour
+
+# Initialize and fit LabelEncoders on the full dataset
+le_location = LabelEncoder().fit(df['Location'])
+le_weather = LabelEncoder().fit(df['Weather'])
+le_road = LabelEncoder().fit(df['Road_Type'])
+
+# Initialize and fit StandardScaler on numerical columns
+numerical_cols = ['Vehicles_Involved', 'Casualties', 'Hour']
+scaler = StandardScaler().fit(df[numerical_cols])
+
+# Import necessary libraries
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load your DataFrame
+df = pd.read_csv('sample_traffic_accidents.csv')
+
+# Convert 'Date' and 'Time' to datetime objects
+df['Date'] = pd.to_datetime(df['Date'])
+df['Time'] = pd.to_datetime(df['Time'], format='%H:%M').dt.hour
+
+# Extract features from 'Date' and drop original 'Date' column
+df['DayofWeek'] = df['Date'].dt.dayofweek  # Example: Monday=0, Sunday=6
+df['Month'] = df['Date'].dt.month
+df.drop(columns=['Date'], inplace=True)  # Remove original Date column
+
+# Rename 'Time' column to 'Hour'
+df.rename(columns={'Time': 'Hour'}, inplace=True)
+
+# Separate features and target
+X = df.drop(columns=['Severity'])
+y = df['Severity']
+
+# Identify categorical and numeric columns
+categorical_cols = ['Location', 'Weather', 'Road_Type']
+
+# --- Evaluate Model ---
+y_pred = model.predict(X_test_scaled)
+# Remove squared=False
+rmse = mean_squared_error(y_test, y_pred) ** 0.5  # Calculate RMSE manually
+print("📉 RMSE:", round(rmse, 2))
+
+!pip install gradio
+
+import gradio as gr
+import pandas as pd
+
+# Define prediction function
+def predict_severity(weather, road_type, location, vehicles_involved, casualties, hour):
+    # Create input dictionary
+    input_data = {
+        f'Weather_{weather}': 1,
+        f'Road_Type_{road_type}': 1,
+        f'Location_{location}': 1,
+        'Vehicles_Involved': int(vehicles_involved),
+        'Casualties': int(casualties),
+        'Hour': int(hour)
+    }
+
+    # Create input DataFrame
+    input_df = pd.DataFrame([input_data])
+
+    # Ensure all required columns exist
+    for col in X.columns:
+        if col not in input_df.columns:
+            input_df[col] = 0
+    input_df = input_df[X.columns]
+
+    # Scale and predict
+    input_scaled = scaler.transform(input_df)
+    prediction = model.predict(input_scaled)
+
+    return f"🎓 Predicted Final Grade (G3): {round(prediction[0], 2)}"
+
+import pandas as pd
+import gradio as gr
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import StandardScaler
+
+# --- Load and Prepare Dataset ---
+df = pd.read_csv("sample_traffic_accidents.csv")
+
+# Convert time to hour (for model input)
+df['Hour'] = pd.to_datetime(df['Time'], format='%H:%M').dt.hour
+
+# Features to use
+features = ['Weather', 'Road_Type', 'Location', 'Vehicles_Involved', 'Casualties', 'Hour']
+target = 'Severity'
+
+# Encode categorical variables
+df_encoded = pd.get_dummies(df[features], drop_first=True)
+X = df_encoded
+y = df[target]
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train model
+model = RandomForestRegressor()
+model.fit(X_train_scaled, y_train)
+
+# --- Prediction Function ---
+def predict_severity(weather, road_type, location, vehicles, casualties, hour):
+    # Create input dictionary
+    input_data = {
+        f'Weather_{weather}': 1,
+        f'Road_Type_{road_type}': 1,
+        f'Location_{location}': 1,
+        'Vehicles_Involved': int(vehicles),
+        'Casualties': int(casualties),
+        'Hour': int(hour)
+    }
+
+    # Convert to DataFrame
+    input_df = pd.DataFrame([input_data])
+
+    # Ensure all expected columns are present
+    for col in X.columns:
+        if col not in input_df.columns:
+            input_df[col] = 0
+    input_df = input_df[X.columns]
+
+    # Scale and predict
+    input_scaled = scaler.transform(input_df)
+    prediction = model.predict(input_scaled)
+    return f"🎓 Predicted Final Grade (Severity): {round(prediction[0], 2)}"
+
+# --- Gradio UI ---
+interface = gr.Interface(
+    fn=predict_severity,
+    inputs=[
+        gr.Dropdown(df['Weather'].unique().tolist(), label="Weather"),
+        gr.Dropdown(df['Road_Type'].unique().tolist(), label="Road Type"),
+        gr.Dropdown(df['Location'].unique().tolist(), label="Location"),
+        gr.Number(label="Vehicles Involved"),
+        gr.Number(label="Casualties"),
+        gr.Slider(0, 23, step=1, label="Hour of Day")
+    ],
+    outputs="text",
+    title="🚦 Accident Severity Predictor",
+    description="Enter traffic conditions to predict the severity of a road accident as a grade (G3-style)"
+)
+
+interface.launch()
